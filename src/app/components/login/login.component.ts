@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 //Service
 import { ApiService } from 'src/app/services/api.service';
 //Interface
-import { LoginI } from 'src/app/services/models/login.interface';
-import { ResponseI } from './../../services/models/response.interface';
+import { LoginI } from 'src/app/models/login.interface';
+import { ResponseI } from '../../models/response.interface';
 
 @Component({
   selector: 'app-login',
@@ -20,11 +20,13 @@ export class LoginComponent implements OnInit {
     user : new FormControl('', Validators.required),
     password : new FormControl('', Validators.required)
   })
+
   constructor (private api:ApiService, private router: Router) {}
-  
+
   ngOnInit(): void {
-    
+
   }
+
   checkLocalStorage(){
     if(localStorage.getItem('token')){
       this.router.navigate([''])
@@ -39,10 +41,10 @@ export class LoginComponent implements OnInit {
       if(dataResponse.status == "ok" ){
         localStorage.setItem("token",dataResponse.token);
         if(dataResponse.rol == "admin"){
-          this.router.navigate(['mapview'])
+          this.router.navigate(['mapmod'])
         }
         if(dataResponse.rol == "user"){
-          this.router.navigate(['map'])
+          this.router.navigate(['mapview'])
         }
       }else{
         this.errorStatus = true;

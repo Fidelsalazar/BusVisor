@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog'
 
 //Service
 import { ApiService } from './services/api.service';
@@ -16,6 +17,7 @@ import { MapmodComponent } from './components/mapmod/mapmod.component';
 import { Positions } from './services/models/positions';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { RutmodComponent } from './components/rutmod/rutmod.component';
+import { UsermodComponent } from './components/usermod/usermod.component';
 
 @NgModule({
   declarations: [
@@ -24,13 +26,15 @@ import { RutmodComponent } from './components/rutmod/rutmod.component';
     NavbarComponent,
     MapmodComponent,
     routingComponents,
-    RutmodComponent
+    RutmodComponent,
+    UsermodComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    ReactiveFormsModule, 
+    ReactiveFormsModule,
+    MatDialogModule,
     FormsModule
   ],
   providers: [

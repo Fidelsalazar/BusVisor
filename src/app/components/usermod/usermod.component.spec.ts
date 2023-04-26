@@ -1,19 +1,18 @@
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MapmodComponent } from './mapmod.component';
+import { UsermodComponent } from './usermod.component';
 
-describe('MapmodComponent', () => {
-  let component: MapmodComponent;
-  let fixture: ComponentFixture<MapmodComponent>;
+describe('UsermodComponent', () => {
+  let component: UsermodComponent;
+  let fixture: ComponentFixture<UsermodComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MapmodComponent ]
+      declarations: [ UsermodComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MapmodComponent);
+    fixture = TestBed.createComponent(UsermodComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

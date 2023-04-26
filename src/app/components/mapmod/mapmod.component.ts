@@ -1,9 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Router } from '@angular/router';
 import * as LM from 'leaflet';
 
 // when the docs use an import:
 declare const L: any; // --> Works
 import 'leaflet-draw';
+//Api
+import { ApiService } from 'src/app/services/api.service';
+import { DialogService } from 'src/app/services/dialog.service';
+//Interface
 
 
 const markerIcon = L.icon({
@@ -23,34 +28,38 @@ L.Marker.prototype.options.icon = markerIcon;
 })
 
 export class MapmodComponent implements OnInit{
-  
+
+  showModal = false;
+  errorStatus:boolean = false;
+  errorMsj:any = "";
+
   map: any;
-  lat: number = -22.9035;
-  lon: number = -43.2096;
+  lat: number = 20.02083;
+  lon: number = -75.82667;
   maker: L.Marker<any> | undefined;
   dbmaker: L.Marker<any>[] | undefined;
-  
+
   markers: any[]| undefined;
   drawnItems: any;
-  
+
+  markerData: any;
+  pointsData: [] | undefined;
+
   datachild: any;
   isAddFieldTask: boolean| undefined;
   isSave: boolean| undefined;
 
+  constructor (private dialogService: DialogService,private api:ApiService, private router: Router) {}
 
-  constructor(
-  ){
-    
-  }
   ngOnInit(): void {
-    this.map = L.map('map',).setView([this.lat, this.lon], 13);
- 
+    this.map = L.map('map',).setView([ this.lat, this.lon ], 13);
+
     LM.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	    maxZoom: 20,
 	    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
-    
-    
+
+
 
     this.drawnItems = new LM.FeatureGroup();
 
@@ -69,7 +78,7 @@ export class MapmodComponent implements OnInit{
         }
       },
       edit: {
-        featureGroup: this.drawnItems, 
+        featureGroup: this.drawnItems,
       }
 
     };
@@ -78,23 +87,52 @@ export class MapmodComponent implements OnInit{
     this.map.addControl(drawControl);
 
     var app = this;
-    this.map.on(L.Draw.Event.CREATED, function (e:any) {
-      var type = e.layerType,
-        layer = e.layer;
+    this.map.on(L.Draw.Event.CREATED, (e:any) => {
+      const type = e.layerType;
+      const layer = e.layer;
 
       if (type === 'marker') {
+        this.markerData = {
+          lat: layer.getLatLng().lat,
+          lng: layer.getLatLng().lng
+        };
         layer.bindPopup('A popup!');
         console.log(layer.getLatLng());
+        console.log("markerData:", this.markerData);
+
       }
-      else {
+      else{
+        this.pointsData = layer.getLatLngs();
+        console.log("pointsData:" + this.pointsData);
         console.log(layer.getLatLngs());
       }
-      app.drawnItems.addLayer(layer);
-
+      return app.drawnItems.addLayer(layer);
     });
 
   }
 
- 
+  //openDialogCustom(){
+    //this.dialogService.openDialogCuston({
+      //title: 'title1',
+      //content: 'Content 1'
+    //})
+    //.afterClosed()
+    //.subscribe( (res) => console.log('Dialog Custom CLose',res));
+  //}
 
+  openDialogWhtiTemplate(template : TemplateRef<any>){
+    this.dialogService.openDialogWithTemplate({
+      template
+    })
+    //.afterClosed()
+    //.subscribe( (res) => console.log('Dialog Custom CLose',res));
+  }
+
+  openModal() {
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+  }
 }

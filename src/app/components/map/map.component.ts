@@ -12,10 +12,13 @@ import * as L from 'leaflet';
 
 
 export class MapComponent {
+
+  lat: number = 20.02083;
+  lon: number = -75.82667;
   
   ngAfterViewInit(): void{
 
-    const map  = L.map('map').setView([ -22.9035, -43.2096], 13);
+    const map  = L.map('map').setView([ this.lat, this.lon ], 13);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	    maxZoom: 20,

@@ -26,7 +26,7 @@ class BusLineModel():
       connection = get_connection()
 
       with connection.cursor() as cursor:
-        cursor.execute("DELETE FROM movie WHERE  name = %s", (busline.name)) 
+        cursor.execute("DELETE FROM busline WHERE  name = %s", (busline.name)) 
         affected_rows = cursor.rowcount
         connection.commit()
       connection.close()

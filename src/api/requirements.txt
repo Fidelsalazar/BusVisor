@@ -88,6 +88,7 @@ pycparser==2.21
 pydantic==1.10.2
 PyDrive2==1.14.0
 PyGObject==3.42.2
+PyJWT==2.6.0
 PyNaCl==1.4.0
 pyOpenSSL==22.1.0
 pyparsing==3.0.9
@@ -127,6 +128,7 @@ uritemplate==4.1.1
 urllib3==1.26.12
 validate==5.1.0.dev0
 validate-pyproject==0.10.1
+vboxapi==1.0
 virtualenv==20.19.0
 webencodings==0.5.1
 Werkzeug==2.2.2

@@ -6,14 +6,31 @@
     crossorigin=""/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@latest/dist/leaflet.draw-src.css" />
-  
+
     <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.css"/>
 </head>
-  
 
-<div class="map" id="map"></div>
-  
+<button
+  class="modalButton"
+  (click)="openModal()"
+>
+  Guardar
+</button>
+<div leafletMap  class="map" id="map"></div>
+
+<ng-container *ngIf="showModal">
+  <div class="modal-backdrop"></div>
+  <div class="modal-container">
+    <ng-container *ngTemplateOutlet="template"></ng-container>
+
+  </div>
+</ng-container>
+
+<ng-template #template>
+
+</ng-template>
+
 <script src="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.umd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
