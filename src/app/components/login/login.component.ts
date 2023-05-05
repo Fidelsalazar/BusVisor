@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 //Service
 import { ApiService } from 'src/app/services/api.service';
 //Interface
-import { LoginI } from 'src/app/models/login.interface';
-import { ResponseI } from '../../models/response.interface';
+import { LoginI } from 'src/app/models/send/login.interface';
+import { ResponseI } from '../../models/response/response.interface';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
 
   errorStatus:boolean = false;
   errorMsj:any = "";
+
   loginForm = new FormGroup({
     user : new FormControl('', Validators.required),
     password : new FormControl('', Validators.required)
@@ -41,14 +42,15 @@ export class LoginComponent implements OnInit {
       if(dataResponse.status == "ok" ){
         localStorage.setItem("token",dataResponse.token);
         if(dataResponse.rol == "admin"){
-          this.router.navigate(['mapmod'])
+          this.router.navigate(['home'])
         }
         if(dataResponse.rol == "user"){
           this.router.navigate(['mapview'])
         }
       }else{
-        this.errorStatus = true;
-        this.errorMsj = dataResponse.token.error_msg;
+        this.errorMsj = dataResponse.status
+        //this.errorStatus = true;
+        //this.errorMsj = dataResponse.token.error_msg;
       }
     });
   }

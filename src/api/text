@@ -1,0 +1,65 @@
+Para procesar los datos proporcionados y almacenarlos en una base de datos PostgreSQL, se puede utilizar PySpark junto con la librería `psycopg2` para conectarse a la base de datos. El siguiente código muestra cómo se puede lograr esto:
+
+```python
+from pyspark.sql import SparkSession
+import psycopg2
+
+# Configuración de la sesión de Spark
+spark = SparkSession.builder.appName("Guardar en PostgreSQL").getOrCreate()
+
+# Definir los datos de conexión a la base de datos PostgreSQL
+db_host = "localhost"
+db_port = "5432"
+db_name = "nombre_de_la_base_de_datos"
+db_user = "nombre_de_usuario"
+db_password = "contraseña_del_usuario"
+
+# Establecer la conexión a la base de datos PostgreSQL
+conn = psycopg2.connect(host=db_host, port=db_port, dbname=db_name, user=db_user, password=db_password)
+
+# Crear un cursor para la base de datos
+cur = conn.cursor()
+
+# Crear la tabla "busline" si no existe
+cur.execute("CREATE TABLE IF NOT EXISTS busline (id SERIAL PRIMARY KEY, name VARCHAR(255), from_location VARCHAR(255), to_location VARCHAR(255))")
+conn.commit()
+
+# Crear la tabla "points" si no existe
+cur.execute("CREATE TABLE IF NOT EXISTS points (id SERIAL PRIMARY KEY, name VARCHAR(255), latitude FLOAT, longitude FLOAT)")
+conn.commit()
+
+# Leer el archivo JSON
+ruta_a11 = spark.read.json("ruta_a11.json")
+
+# Obtener los datos de la ruta
+name = ruta_a11.select("name").collect()[0][0]
+from_location = ruta_a11.select("from").collect()[0][0]
+to_location = ruta_a11.select("to").collect()[0][0]
+
+# Insertar los datos de la ruta en la tabla "busline"
+cur.execute("INSERT INTO busline (name, from_location, to_location) VALUES (%s, %s, %s) RETURNING id",
+            (name, from_location, to_location))
+busline_id = cur.fetchone()[0]
+conn.commit()
+
+# Obtener los datos de los puntos
+points_data = []
+for point in ruta_a11.select("points").collect()[0][0]:
+    latitude = point["latitud"]
+    longitude = point["longitud"]
+    points_data.append((name, latitude, longitude))
+
+# Insertar los datos de los puntos en la tabla "points"
+cur.executemany("INSERT INTO points (name, latitude, longitude) VALUES (%s, %s, %s)",
+                [(busline_id, latitude, longitude) for (name, latitude, longitude) in points_data])
+conn.commit()
+
+# Cerrar la conexión a la base de datos
+cur.close()
+conn.close()
+
+# Cerrar la sesión de Spark
+spark.stop()
+```
+
+Este código leerá el archivo `ruta_a11.json` y almacenará los datos de la ruta en la tabla `busline` y los datos de los puntos en la tabla `points` en la base de datos PostgreSQL especificada. La tabla `busline` tiene una columna llamada `id` que se genera automáticamente mediante el uso del tipo de datos `SERIAL` en PostgreSQL. El código también almacena el `id` generado para la ruta en una variable llamada `busline_id`, que se usa para asociar cada punto con la ruta correspondiente en la tabla `points`.

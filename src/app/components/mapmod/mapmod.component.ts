@@ -1,15 +1,10 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { Router } from '@angular/router';
 import * as LM from 'leaflet';
-
+//Services
+import { DialogService } from 'src/app/services/dialog.service';
 // when the docs use an import:
 declare const L: any; // --> Works
 import 'leaflet-draw';
-//Api
-import { ApiService } from 'src/app/services/api.service';
-import { DialogService } from 'src/app/services/dialog.service';
-//Interface
-
 
 const markerIcon = L.icon({
   iconSize: [25, 41],
@@ -30,6 +25,7 @@ L.Marker.prototype.options.icon = markerIcon;
 export class MapmodComponent implements OnInit{
 
   showModal = false;
+
   errorStatus:boolean = false;
   errorMsj:any = "";
 
@@ -42,14 +38,18 @@ export class MapmodComponent implements OnInit{
   markers: any[]| undefined;
   drawnItems: any;
 
-  markerData: any;
-  pointsData: [] | undefined;
+  marker: any;
+  markerData: any[]=[];
+  pointsData: any;
 
   datachild: any;
   isAddFieldTask: boolean| undefined;
   isSave: boolean| undefined;
 
-  constructor (private dialogService: DialogService,private api:ApiService, private router: Router) {}
+  constructor (
+    private dialogService: DialogService,
+
+  ) {}
 
   ngOnInit(): void {
     this.map = L.map('map',).setView([ this.lat, this.lon ], 13);
@@ -92,33 +92,26 @@ export class MapmodComponent implements OnInit{
       const layer = e.layer;
 
       if (type === 'marker') {
-        this.markerData = {
+        this.marker = {
           lat: layer.getLatLng().lat,
           lng: layer.getLatLng().lng
         };
-        layer.bindPopup('A popup!');
-        console.log(layer.getLatLng());
-        console.log("markerData:", this.markerData);
 
+        layer.bindPopup('A popup!');
+
+        this.markerData.push(this.marker);
+        //console.log("markerData:", this.markerData);
       }
       else{
         this.pointsData = layer.getLatLngs();
-        console.log("pointsData:" + this.pointsData);
-        console.log(layer.getLatLngs());
+        //console.log("pointsData:" + this.pointsData);
+        //console.log(layer.getLatLngs());
       }
+
       return app.drawnItems.addLayer(layer);
     });
 
   }
-
-  //openDialogCustom(){
-    //this.dialogService.openDialogCuston({
-      //title: 'title1',
-      //content: 'Content 1'
-    //})
-    //.afterClosed()
-    //.subscribe( (res) => console.log('Dialog Custom CLose',res));
-  //}
 
   openDialogWhtiTemplate(template : TemplateRef<any>){
     this.dialogService.openDialogWithTemplate({
@@ -132,7 +125,8 @@ export class MapmodComponent implements OnInit{
     this.showModal = true;
   }
 
-  closeModal() {
+  public closeModal() {
     this.showModal = false;
   }
+
 }
